@@ -20,15 +20,7 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-
+    
     - name: 'BrowserStack Env Setup'
       uses: 'browserstack/github-actions/setup-env@master'
       with:
@@ -41,4 +33,14 @@ jobs:
       with:
         local-testing: start
         local-identifier: random
+    - name: 'Checkout the repository'
+      uses: actions/checkout@v2
+    - name: 'Building web application to be tested'
+      run: npm install
+    - name: 'Running test on BrowserStack'  # Invokes the actual test script that would run on BrowserStack browsers
+      run: npm run sample-test  # See sample test script above
+    - name: 'BrowserStackLocal Stop'  # Terminating the BrowserStackLocal tunnel connection
+      uses: browserstack/github-actions/setup-local@master
+      with:
+        local-testing: stop
 
